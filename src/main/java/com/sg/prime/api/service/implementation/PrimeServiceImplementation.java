@@ -1,4 +1,4 @@
-package com.sg.prime.api.service.implimentation;
+package com.sg.prime.api.service.implementation;
 import com.sg.prime.api.domain.Prime;
 import com.sg.prime.api.repository.PrimeRepository;
 import com.sg.prime.api.service.PrimeService;
@@ -6,11 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static org.springframework.data.domain.PageRequest.of;
 
 
 @RequiredArgsConstructor
@@ -34,24 +37,34 @@ public class PrimeServiceImplementation implements PrimeService {
         return primes;
     }
 
+
+
     @Override
-    public Collection<Prime> findPrimesSearchByLimit(Integer limit) {
+    public Collection<Prime> findPrimesSearchesByLimit(Integer limit) {
         log.info("Fetching last 10 primes searched");
-        return primeRepository.findAll();
+        return primeRepository.findPrimesSearchesByLimit(of(0, limit));
     }
 
-
-    private List<Integer> computePrimesNumber(Integer inputNumber) {
-        List<Integer> primesBelong = IntStream.range(inputNumber, Integer.MAX_VALUE)
+    private List<Integer> getBelongPrimeNumber(Integer inputNumber) {
+        return IntStream.range(inputNumber, Integer.MAX_VALUE)
                 .filter(x -> x > inputNumber && isPrime(x))
                 .limit(3)
                 .boxed()
                 .collect(Collectors.toList());
-        List<Integer> primesBelow = IntStream.range(0, inputNumber)
+    }
+
+    private List<Integer> getUpPrimeNumber(Integer inputNumber) {
+        return IntStream.range(0, inputNumber)
                 .boxed()
+                .sorted(Collections.reverseOrder())
                 .filter(x -> x < inputNumber && isPrime(x))
                 .limit(2)
                 .collect(Collectors.toList());
+    }
+
+    private List<Integer> computePrimesNumber(Integer inputNumber) {
+        List<Integer> primesBelong = getUpPrimeNumber(inputNumber);
+        List<Integer> primesBelow = getBelongPrimeNumber(inputNumber);
 
         return Stream.of(primesBelong, primesBelow)
                 .flatMap(Collection::stream)
@@ -60,7 +73,14 @@ public class PrimeServiceImplementation implements PrimeService {
 
 
     private boolean isPrime(Integer number) {
-                    return true;
+        if (number <= 2)
+            return number == 2;
+        else
+            return (number % 2) != 0
+                    &&
+                    IntStream.rangeClosed(3, (int) Math.sqrt(number))
+                            .filter(n -> n % 2 != 0)
+                            .noneMatch(n -> (number % n == 0));
     }
 }
 
