@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,7 +31,6 @@ class PrimeServiceImplementationTest {
     @Autowired
     private PrimeServiceImplementation primeServiceImplementation;
 
-
     @Test
     void should_create_prime() {
         Prime prime = new Prime();
@@ -41,7 +39,7 @@ class PrimeServiceImplementationTest {
         prime.setId(123L);
         prime.setInputNumber(10);
         prime.setSumOfPrimes(1);
-        OngoingStubbing<Object> objectOngoingStubbing = when(this.primeRepository.save(any())).thenReturn(prime);
+        when(this.primeRepository.save(any())).thenReturn(prime);
         Prime expectedPrime = new Prime();
         expectedPrime.setAverageOfPrimes(10.0d);
         expectedPrime.setCreationDate(LocalDateTime.of(1, 1, 1, 1, 1));
@@ -50,7 +48,7 @@ class PrimeServiceImplementationTest {
         expectedPrime.setSumOfPrimes(1);
         List<Integer> actualCreateResult = this.primeServiceImplementation.create(expectedPrime);
         assertEquals(5, actualCreateResult.size());
-        verify(this.primeRepository).save((Prime) any());
+        verify(this.primeRepository).save(any());
         assertEquals(10.6d, expectedPrime.getAverageOfPrimes());
         assertEquals(53, expectedPrime.getSumOfPrimes().intValue());
     }
