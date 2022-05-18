@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "53e0eb0d-8098-497b-b768-660a0c1f2663",
+		"name": "PrimesApiCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add prime",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"inputNumber\":17\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http:localhost:8080/prime/save",
+					"host": [
+						"http:localhost"
+					],
+					"port": "8080",
+					"path": [
+						"prime",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getLast10Searches",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

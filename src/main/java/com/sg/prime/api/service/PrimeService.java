@@ -8,5 +8,5 @@ import java.util.List;
 public interface PrimeService {
     List<Integer> create(Prime prime);
 
-    Collection<Prime> findPrimesSearchesByLimit(Integer limit);
+    Collection<Prime> findPrimeSearchesByLimit(Integer limit);
 }

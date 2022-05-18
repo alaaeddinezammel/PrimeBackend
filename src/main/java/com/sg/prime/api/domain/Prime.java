@@ -33,5 +33,4 @@ public class Prime {
     private double averageOfPrimes;
 
 
-
 }

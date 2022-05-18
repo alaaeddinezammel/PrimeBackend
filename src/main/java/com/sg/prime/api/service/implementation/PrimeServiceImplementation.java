@@ -1,10 +1,12 @@
 package com.sg.prime.api.service.implementation;
+
 import com.sg.prime.api.domain.Prime;
 import com.sg.prime.api.repository.PrimeRepository;
 import com.sg.prime.api.service.PrimeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,14 +40,13 @@ public class PrimeServiceImplementation implements PrimeService {
     }
 
 
-
     @Override
-    public Collection<Prime> findPrimesSearchesByLimit(Integer limit) {
+    public Collection<Prime> findPrimeSearchesByLimit(Integer limit) {
         log.info("Fetching last 10 primes searched");
         return primeRepository.findPrimesSearchesByLimit(of(0, limit));
     }
 
-    private List<Integer> getBelongPrimeNumber(Integer inputNumber) {
+    private List<Integer> getPrimesBeforeInputNumber(Integer inputNumber) {
         return IntStream.range(inputNumber, Integer.MAX_VALUE)
                 .filter(x -> x > inputNumber && isPrime(x))
                 .limit(3)
@@ -53,7 +54,7 @@ public class PrimeServiceImplementation implements PrimeService {
                 .collect(Collectors.toList());
     }
 
-    private List<Integer> getUpPrimeNumber(Integer inputNumber) {
+    private List<Integer> getPrimesAfterInputNumber(Integer inputNumber) {
         return IntStream.range(0, inputNumber)
                 .boxed()
                 .sorted(Collections.reverseOrder())
@@ -63,10 +64,7 @@ public class PrimeServiceImplementation implements PrimeService {
     }
 
     private List<Integer> computePrimesNumber(Integer inputNumber) {
-        List<Integer> primesBelong = getUpPrimeNumber(inputNumber);
-        List<Integer> primesBelow = getBelongPrimeNumber(inputNumber);
-
-        return Stream.of(primesBelong, primesBelow)
+        return Stream.of(getPrimesBeforeInputNumber(inputNumber), getPrimesAfterInputNumber(inputNumber))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
